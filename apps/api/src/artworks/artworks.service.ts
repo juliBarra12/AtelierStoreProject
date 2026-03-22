@@ -1,0 +1,67 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateArtworkDto } from './dto/create-artwork.dto';
+import { Artwork } from './entities/artwork.entity';
+
+@Injectable()
+export class ArtworksService {
+    private artworks: Artwork[] = [
+        {
+            id: '1',
+            slug: 'etnias-naomi',
+            title: 'Naomi',
+            description: '',
+            price: 500,
+            currency: 'USD',
+            widthCm: 120,
+            heightCm: 80,
+            technique: 'Oleo sobre lienzo',
+            collection: 'Etnias',
+            images: ['/images/etnias-naomi.jpg'],
+            available: true,
+            featured: true,
+            createdAt: new Date().toISOString(),
+        },
+        {
+            id: '2',
+            slug: 'etnias-juliana',
+            title: 'Juliana',
+            description: '',
+            price: 6000,
+            currency: 'UYU',
+            widthCm: 120,
+            heightCm: 80,
+            technique: 'Oleo sobre lienzo',
+            collection: 'Etnias',
+            images: ['/images/etnias-juliana.jpg'],
+            available: true,
+            featured: true,
+            createdAt: new Date().toISOString(),
+        }
+    ]
+
+    findAll(){
+        return this.artworks;
+    }
+
+    findOne(id: string): Artwork {
+        const artwork = this.artworks.find((item) => item.id === id);
+
+        if (!artwork) {
+             throw new NotFoundException(`Artwork with id ${id} not found`);
+        }
+
+        return artwork;
+    }
+
+    create(createArtworkDto: CreateArtworkDto): Artwork {
+        const newArtwork: Artwork = {
+            id: String(this.artworks.length + 1),
+            ...createArtworkDto,
+            createdAt: new Date().toISOString(),
+        };
+
+        this.artworks.push(newArtwork);
+
+        return newArtwork;
+    }
+}

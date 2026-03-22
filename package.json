@@ -1,0 +1,8 @@
+{
+  "name": "atelierstoreproject",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/"
+  ]
+}
