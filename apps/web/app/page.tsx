@@ -1,7 +1,17 @@
 import Image from "next/image";
 
+export const dynamic = 'force-dynamic';
+
 async function getArtworks() {
-  const res = await fetch('http://localhost:4000/artworks');
+  const baseUrl = process.env.API_URL || 'http://localhost:4000';
+  const res = await fetch(`${baseUrl}/artworks`, {
+    cache: 'no-store',
+  });
+
+  if(!res.ok) {
+    throw new Error('Failed to fetch artworks');
+  }
+
   return res.json();
 }
 
