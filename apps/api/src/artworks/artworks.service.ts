@@ -4,6 +4,8 @@ import { Artwork } from './entities/artwork.entity';
 
 @Injectable()
 export class ArtworksService {
+
+    private readonly baseUrl = process.env.BASE_URL || 'http://localhost:4000';
     private artworks: Artwork[] = [
         {
             id: '1',
@@ -16,7 +18,7 @@ export class ArtworksService {
             heightCm: 80,
             technique: 'Oleo sobre lienzo',
             collection: 'Etnias',
-            images: ['/images/etnias-naomi.jpg'],
+            images: [`${this.baseUrl}/images/placeholder-artwork.jpg`],
             available: true,
             featured: true,
             createdAt: new Date().toISOString(),
@@ -32,7 +34,7 @@ export class ArtworksService {
             heightCm: 80,
             technique: 'Oleo sobre lienzo',
             collection: 'Etnias',
-            images: ['/images/etnias-juliana.jpg'],
+            images: [`${this.baseUrl}/images/placeholder-artwork.jpg`],
             available: true,
             featured: true,
             createdAt: new Date().toISOString(),
