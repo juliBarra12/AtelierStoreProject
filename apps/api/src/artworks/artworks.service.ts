@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtworkDto } from './dto/create-artwork.dto';
+import { GetArtworksQueryDto } from './dto/get-artworks-query-dto';
 import { Artwork } from './entities/artwork.entity';
 
 @Injectable()
@@ -41,8 +42,35 @@ export class ArtworksService {
         }
     ]
 
-    findAll(){
-        return this.artworks;
+    findAll(query: GetArtworksQueryDto): Artwork[]{
+        let results = [...this.artworks];
+
+        if(query.collection) {
+            results = results.filter(
+                (artwork) =>
+                    artwork.collection.toLowerCase() === query.collection!.toLowerCase(),
+            );
+        }
+
+        if(query.technique) {
+            results = results.filter(
+                (artwork) =>
+                    artwork.technique.toLowerCase() === query.technique!.toLowerCase(),
+            );
+        }
+
+        if(query.available !== undefined) {
+            const available = query.available === 'true';
+            results = results.filter((artwork) => artwork.available === available);
+        }
+
+        if(query.featured !== undefined) {
+            const featured = query.featured === 'true';
+            results = results.filter((artwork) => artwork.featured === featured);
+        }
+        
+        
+        return results;
     }
 
     findOne(id: string): Artwork {

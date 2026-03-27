@@ -14,7 +14,7 @@ export default async function ArtworkDetailPage({
     const { id } = await params;
     const artwork = await getArtworkById(id);
 
-    const imageUrl = artwork.images?.[0] || '/images/placeholder-artwork.jpg';
+    const imageUrl = artwork.images?.[0];
 
     return (
         <main className="mx-auto max-w-5xl p-6">
