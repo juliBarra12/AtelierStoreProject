@@ -9,7 +9,7 @@ export class ArtworksController {
     constructor(private readonly artworksService: ArtworksService) {}
 
     @Get()
-    async findAll(@Query() query: GetArtworksQueryDto) {
+    findAll(@Query() query: GetArtworksQueryDto): Artwork[] {
         return this.artworksService.findAll(query);
     }
 
