@@ -14,12 +14,12 @@ export class ArtworksController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Artwork {
+    async findOne(@Param('id') id: string) {
         return this.artworksService.findOne(id);
     }
 
     @Post()
-    create(@Body() createArtworkDto: CreateArtworkDto): Artwork {
+    create(@Body() createArtworkDto: CreateArtworkDto) {
         return this.artworksService.create(createArtworkDto);
     }
 }
