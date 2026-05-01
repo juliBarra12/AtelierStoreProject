@@ -2,9 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateArtworkDto } from './dto/create-artwork.dto';
 import { GetArtworksQueryDto } from './dto/get-artworks-query-dto';
 import { Artwork } from './entities/artwork.entity';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ArtworksService {
+    constructor(private readonly prisma: PrismaService) {}
+
 
     private readonly baseUrl = process.env.BASE_URL || 'http://localhost:4000';
     private artworks: Artwork[] = [
@@ -34,7 +37,7 @@ export class ArtworksService {
             widthCm: 120,
             heightCm: 80,
             technique: 'Oleo sobre lienzo',
-            collection: 'Etnias',
+            collection: 'Abstractos',
             images: [`${this.baseUrl}/images/placeholder-artwork.jpg`],
             available: true,
             featured: true,
@@ -42,39 +45,28 @@ export class ArtworksService {
         }
     ]
 
-    findAll(query: GetArtworksQueryDto): Artwork[]{
-        let results = [...this.artworks];
-
-        if(query.collection) {
-            results = results.filter(
-                (artwork) =>
-                    artwork.collection.toLowerCase() === query.collection!.toLowerCase(),
-            );
-        }
-
-        if(query.technique) {
-            results = results.filter(
-                (artwork) =>
-                    artwork.technique.toLowerCase() === query.technique!.toLowerCase(),
-            );
-        }
-
-        if(query.available !== undefined) {
-            const available = query.available === 'true';
-            results = results.filter((artwork) => artwork.available === available);
-        }
-
-        if(query.featured !== undefined) {
-            const featured = query.featured === 'true';
-            results = results.filter((artwork) => artwork.featured === featured);
-        }
-        
-        
-        return results;
+    async findAll(query: GetArtworksQueryDto) {
+        return this.prisma.artwork.findMany({
+            where: {
+                collection: query.collection
+                    ? { equals: query.collection, mode: 'insensitive' }
+                    : undefined,
+                technique: query.technique
+                    ? { equals: query.technique, mode: 'insensitive' }
+                    : undefined,
+                available: query.available !== undefined ? query.available === 'true' : undefined,
+                featured: query.featured !== undefined ? query.featured === 'true' : undefined, 
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        });
     }
 
-    findOne(id: string): Artwork {
-        const artwork = this.artworks.find((item) => item.id === id);
+    async findOne(id: string) {
+        const artwork = await this.prisma.artwork.findUnique({
+            where: { id },
+        });
 
         if (!artwork) {
              throw new NotFoundException(`Artwork with id ${id} not found`);
@@ -83,15 +75,9 @@ export class ArtworksService {
         return artwork;
     }
 
-    create(createArtworkDto: CreateArtworkDto): Artwork {
-        const newArtwork: Artwork = {
-            id: String(this.artworks.length + 1),
-            ...createArtworkDto,
-            createdAt: new Date().toISOString(),
-        };
-
-        this.artworks.push(newArtwork);
-
-        return newArtwork;
+    async create(createArtworkDto: CreateArtworkDto) {
+        return this.prisma.artwork.create({
+            data: createArtworkDto,
+        });
     }
 }

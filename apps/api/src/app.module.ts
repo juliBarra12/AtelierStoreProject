@@ -4,14 +4,16 @@ import { AppService } from './app.service';
 import { ArtworksModule } from './artworks/artworks.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname,'..','images'),
+      rootPath: join(process.cwd(),'images'),
       serveRoot: '/images'
     }),
-    ArtworksModule,],
+    PrismaModule,
+    ArtworksModule],
   controllers: [AppController],
   providers: [AppService],
 })

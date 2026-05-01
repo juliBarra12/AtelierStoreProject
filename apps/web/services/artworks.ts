@@ -1,5 +1,5 @@
 import { env } from '@/lib/env';
-import { Artwork } from '@/types/artwork';
+import { Artwork, CreateArtworkInput } from '@/types/artwork';
 
 export type GetArtworksFilters = {
     collection?: string;
@@ -51,6 +51,25 @@ export async function getArtworkById(id: string): Promise<Artwork> {
 
     if(!response.ok) {
         throw new Error(`Could not get artwork with id ${id}`);
+    }
+
+    return response.json();
+}
+
+export async function createArtwork(
+    input: CreateArtworkInput
+): Promise<Artwork> { 
+    const response  = await fetch(`${env.apiUrl}/artworks`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(input),
+     });
+
+    if(!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Could not create artwork: ${errorText}`);
     }
 
     return response.json();

@@ -9,17 +9,17 @@ export class ArtworksController {
     constructor(private readonly artworksService: ArtworksService) {}
 
     @Get()
-    findAll(@Query() query: GetArtworksQueryDto): Artwork[] {
+    async findAll(@Query() query: GetArtworksQueryDto) {
         return this.artworksService.findAll(query);
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string): Artwork {
+    async findOne(@Param('id') id: string) {
         return this.artworksService.findOne(id);
     }
 
     @Post()
-    create(@Body() createArtworkDto: CreateArtworkDto): Artwork {
+    create(@Body() createArtworkDto: CreateArtworkDto) {
         return this.artworksService.create(createArtworkDto);
     }
 }
