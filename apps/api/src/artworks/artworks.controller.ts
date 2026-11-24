@@ -2,14 +2,13 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
 import { ArtworksService } from './artworks.service';
 import { CreateArtworkDto } from './dto/create-artwork.dto';
 import { GetArtworksQueryDto } from './dto/get-artworks-query-dto';
-import { Artwork } from './entities/artwork.entity';
 
 @Controller('artworks')
 export class ArtworksController {
     constructor(private readonly artworksService: ArtworksService) {}
 
     @Get()
-    findAll(@Query() query: GetArtworksQueryDto): Artwork[] {
+    findAll(@Query() query: GetArtworksQueryDto) {
         return this.artworksService.findAll(query);
     }
 
